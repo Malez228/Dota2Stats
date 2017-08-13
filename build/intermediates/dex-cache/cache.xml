@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="F:\Dota2Stats\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="1c970bc94f1a45f9d6e1a9cae63af7508a2eccc0">
+        <dex dex="F:\Dota2Stats\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_42f61dbd475d4b1d669dd608a4589a15cc24acfe\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="F:\Dota2Stats\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
+        <dex dex="F:\Dota2Stats\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_d10080ec1f4d0086d84700fc75d2578f5147f96d\classes.dex" />
+    </item>
+
+</items>

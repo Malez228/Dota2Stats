@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.malec.dota2stats.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <TabHost
+        android:id="@+id/tabHost"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/tabHeroes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+
+                    <Spinner
+                        android:id="@+id/HeroesList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/Gray"
+                        android:backgroundTintMode="src_in"
+                        android:padding="8dp"
+                        android:popupBackground="@color/Gray"/>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:layout_weight="0.05">
+
+                        <ImageView
+                            android:id="@+id/selectedHeroImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@android:drawable/ic_delete"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="-1dp"
+                            android:text="sHeroName"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toRightOf="@+id/selectedHeroImage"
+                            app:layout_constraintTop_toTopOf="@+id/selectedHeroImage"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroMatches"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="0dp"
+                            android:layout_marginTop="3dp"
+                            android:text="sHeroMatches"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/matches"
+                            app:layout_constraintRight_toRightOf="@+id/matches"
+                            app:layout_constraintTop_toBottomOf="@+id/matches"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroWinrate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="0dp"
+                            android:layout_marginTop="3dp"
+                            android:text="sHeroWinrate"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/textView7"
+                            app:layout_constraintRight_toRightOf="@+id/textView7"
+                            app:layout_constraintTop_toBottomOf="@+id/textView7"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroKDA"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="sHeroKDA"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/kda"
+                            app:layout_constraintTop_toBottomOf="@+id/kda"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroRole"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginTop="3dp"
+                            android:text="sHeroRole"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/selectedHeroName"
+                            app:layout_constraintTop_toBottomOf="@+id/selectedHeroName"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroLane"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="24dp"
+                            android:text="sHeroLane"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toRightOf="@+id/selectedHeroRole"
+                            app:layout_constraintTop_toTopOf="@+id/selectedHeroRole"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroKills"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="sHeroKills"
+                            android:textColor="@android:color/holo_green_dark"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/kills"
+                            app:layout_constraintRight_toRightOf="@+id/kills"
+                            app:layout_constraintTop_toBottomOf="@+id/kills"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroDeaths"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="sHeroDeaths"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/deaths"
+                            app:layout_constraintRight_toRightOf="@+id/deaths"
+                            app:layout_constraintTop_toBottomOf="@+id/deaths"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroAssists"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="sHeroAssists"
+                            android:textColor="@color/LightGray"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/assists"
+                            app:layout_constraintRight_toRightOf="@+id/assists"
+                            app:layout_constraintTop_toBottomOf="@+id/assists"/>
+
+                        <TextView
+                            android:id="@+id/kda"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="KDA"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/matches"
+                            app:layout_constraintTop_toBottomOf="@+id/selectedHeroMatches"/>
+
+                        <TextView
+                            android:id="@+id/kills"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="24dp"
+                            android:text="Kills"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toRightOf="@+id/selectedHeroKDA"
+                            app:layout_constraintTop_toTopOf="@+id/kda"/>
+
+                        <TextView
+                            android:id="@+id/deaths"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="24dp"
+                            android:text="Deaths"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toRightOf="@+id/kills"
+                            app:layout_constraintTop_toTopOf="@+id/kills"/>
+
+                        <TextView
+                            android:id="@+id/assists"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="24dp"
+                            android:text="Assists"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toRightOf="@+id/deaths"
+                            app:layout_constraintTop_toTopOf="@+id/deaths"/>
+
+                        <TextView
+                            android:id="@+id/matches"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Matches"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/selectedHeroImage"
+                            app:layout_constraintTop_toBottomOf="@+id/selectedHeroRole"/>
+
+                        <TextView
+                            android:id="@+id/textView7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="24dp"
+                            android:text="Winrate"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toRightOf="@+id/matches"
+                            app:layout_constraintTop_toTopOf="@+id/matches"/>
+
+                    </android.support.constraint.ConstraintLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tabStats"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/Gray"
+                            android:paddingBottom="8dp">
+
+                            <TextView
+                                android:id="@+id/winrate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginRight="5dp"
+                                android:text="Winrate"
+                                android:textColor="@color/White"
+                                android:textSize="16sp"
+                                app:layout_constraintRight_toLeftOf="@+id/gamesAdandon"
+                                app:layout_constraintTop_toTopOf="@+id/gamesAdandon"/>
+
+                            <TextView
+                                android:id="@+id/gamesAdandon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="Abandons"
+                                android:textColor="?attr/colorButtonNormal"
+                                android:textSize="16sp"
+                                app:layout_constraintRight_toRightOf="@+id/gamesLose"
+                                app:layout_constraintTop_toBottomOf="@+id/gamesLose"/>
+
+                            <TextView
+                                android:id="@+id/gamesWin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginRight="5dp"
+                                android:text="Wins"
+                                android:textColor="@android:color/holo_green_dark"
+                                android:textSize="16sp"
+                                app:layout_constraintRight_toLeftOf="@+id/gamesLose"
+                                app:layout_constraintTop_toTopOf="@+id/gamesLose"/>
+
+                            <TextView
+                                android:id="@+id/mmrParty"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="Party MMR"
+                                android:textColor="@color/White"
+                                android:textSize="16sp"
+                                app:layout_constraintLeft_toLeftOf="@+id/mmrSolo"
+                                app:layout_constraintTop_toBottomOf="@+id/mmrSolo"/>
+
+                            <TextView
+                                android:id="@+id/mmrSolo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Solo MMR"
+                                android:textColor="@color/White"
+                                android:textSize="16sp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <TextView
+                                android:id="@+id/gamesLose"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginRight="8dp"
+                                android:text="Losses"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="16sp"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/mmrSolo"/>
+
+                        </android.support.constraint.ConstraintLayout>
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingBottom="8dp"
+                            tools:layout_editor_absoluteX="8dp"
+                            tools:layout_editor_absoluteY="8dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="vertical">
+
+                                <include
+                                    android:id="@+id/hero"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                                <include
+                                    android:id="@+id/hero2"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                                <include
+                                    android:id="@+id/hero3"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                                <include
+                                    android:id="@+id/hero4"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                                <include
+                                    android:id="@+id/hero5"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                                <include
+                                    android:id="@+id/hero6"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                                <include
+                                    android:id="@+id/hero7"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                                <include
+                                    android:id="@+id/hero8"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                                <include
+                                    android:id="@+id/hero9"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                                <include
+                                    android:id="@+id/hero10"
+                                    layout="@layout/hero_item_element"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+                        </ScrollView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tabItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+</android.support.constraint.ConstraintLayout>
