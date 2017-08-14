@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="8dp">
 
     <ImageView
         android:id="@+id/heroImage"
@@ -61,10 +62,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
         android:text="heroKDA"
         android:textColor="@color/White"
         android:textSize="16sp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/winrate"
-        android:layout_marginTop="0dp"/>
+        app:layout_constraintTop_toTopOf="@+id/winrate"/>
 </android.support.constraint.ConstraintLayout>

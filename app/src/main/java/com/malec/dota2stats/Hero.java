@@ -8,6 +8,8 @@ public class Hero
 
     public String Kils, Deaths, Assists;
 
+    public String LastMatch;
+
     public Hero (String name, String image, String kda, String kills, String deaths, String assists)
     {
         this.Image = image;
@@ -27,7 +29,7 @@ public class Hero
         this.KDA = kda;
     }
 
-    public Hero (String name, String matches, String winrate, String kda, String image, String role, String lane)
+    public Hero (String name, String matches, String winrate, String kda, String image, String role, String lane, String lastmatch)
     {
         this.Image = image;
         this.Name = name;
@@ -36,5 +38,6 @@ public class Hero
         this.KDA = kda;
         this.Role = role;
         this.Lane = lane;
+        this.LastMatch = lastmatch;
     }
 }

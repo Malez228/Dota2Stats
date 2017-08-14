@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity
     public static TextView MmrSolo, MmrParty, WinGames, LoseGames, AbandonGames, Winrate;
     public static TextView HeroName, HeroMatches, HeroWinrate, HeroKDA;
     public static TextView sHeroName, sHeroMatches, sHeroWinrate, sHeroKDA, sHeroRole, sHeroLane;
-    public static TextView sHeroKills, sHeroDeaths, sHeroAssists;
+    public static TextView sHeroKills, sHeroDeaths, sHeroAssists, sHeroGold, sHeroExp, sHeroLastMatch;
     public static ImageView HeroImage;
     public static ImageView sHeroImage;
 
@@ -87,6 +87,9 @@ public class MainActivity extends AppCompatActivity
         sHeroKills = (TextView)findViewById(R.id.selectedHeroKills);
         sHeroDeaths = (TextView)findViewById(R.id.selectedHeroDeaths);
         sHeroAssists = (TextView)findViewById(R.id.selectedHeroAssists);
+        sHeroGold = (TextView)findViewById(R.id.selectedHeroGold);
+        sHeroExp = (TextView)findViewById(R.id.selectedHeroExp);
+        sHeroLastMatch = (TextView)findViewById(R.id.selectedHeroLastMatch);
 
         HeroesList = (Spinner)findViewById(R.id.HeroesList);
     }
@@ -210,6 +213,7 @@ public class MainActivity extends AppCompatActivity
                     String herokda = h.KDA;
                     String herorole = h.Role;
                     String herolane = h.Lane;
+                    String herolastmatch = h.LastMatch;
 
                     new DownloadImageTask(sHeroImage).execute(heroimage);
                     sHeroName.setText(SelectedHero);
@@ -220,6 +224,7 @@ public class MainActivity extends AppCompatActivity
                     sHeroRole.setText(herorole);
                     sHeroLane.setTextColor(GetColor(herolane));
                     sHeroLane.setText(herolane);
+                    sHeroLastMatch.setText(herolastmatch);
 
                     h = Content.GetHeroImpact(PlayerGameImpactHTML, SelectedHero);
                     String herokills = h.Kils;
@@ -229,6 +234,13 @@ public class MainActivity extends AppCompatActivity
                     sHeroKills.setText(herokills);
                     sHeroDeaths.setText(herodeaths);
                     sHeroAssists.setText(heroassists);
+
+                    h = Content.GetHeroEconomy(PlayerEconomyHTML, SelectedHero);
+                    String herogold = h.Kils;
+                    String heroexp = h.Deaths;
+
+                    sHeroGold.setText(herogold);
+                    sHeroExp.setText(heroexp);
                 }
                 catch (Exception e)
                 {
@@ -249,7 +261,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
             /* TODO
-            * допилить что осталось в вкладку герои ( средн. голд экспа) мб еще что найти и запилить
+            * (готово) допилить что осталось в вкладку герои ( средн. голд экспа) мб еще что найти и запилить
             * вкладка итемов все еще пустая - это следущее пойдет
             * можно авторизацию еще добавить но хз для себя любимого же пишу
             */

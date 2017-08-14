@@ -14,6 +14,8 @@
     <color name="BlueGreen">#66B5AB</color>
     <color name="LightGray">#e1e1e1</color>
     <color name="Green">#75946B</color>
+    <color name="Gold">#fbb829</color>
+    <color name="Exp">#76b8a6</color>
 
     <color name="foreground_material_light">#CCCCCC</color>
 </resources>

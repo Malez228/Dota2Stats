@@ -243,6 +243,74 @@
                             app:layout_constraintLeft_toRightOf="@+id/matches"
                             app:layout_constraintTop_toTopOf="@+id/matches"/>
 
+                        <TextView
+                            android:id="@+id/GoldPMin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Gold / Minute"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/kda"
+                            app:layout_constraintTop_toBottomOf="@+id/selectedHeroKDA"/>
+
+                        <TextView
+                            android:id="@+id/ExpPMin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="24dp"
+                            android:text="Experience / Minute"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toRightOf="@+id/GoldPMin"
+                            app:layout_constraintTop_toTopOf="@+id/GoldPMin"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroGold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="sHeroGold"
+                            android:textColor="@color/Gold"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/GoldPMin"
+                            app:layout_constraintRight_toRightOf="@+id/GoldPMin"
+                            app:layout_constraintTop_toBottomOf="@+id/GoldPMin"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroExp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="sHeroExp"
+                            android:textColor="@color/Exp"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="@+id/ExpPMin"
+                            app:layout_constraintRight_toRightOf="@+id/ExpPMin"
+                            app:layout_constraintTop_toBottomOf="@+id/ExpPMin"/>
+
+                        <TextView
+                            android:id="@+id/lastmatch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="48dp"
+                            android:text="Last match"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toLeftOf="@+id/GoldPMin"/>
+
+                        <TextView
+                            android:id="@+id/selectedHeroLastMatch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:text="sHeroLastMatch"
+                            android:textColor="@color/White"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toRightOf="@+id/lastmatch"
+                            app:layout_constraintTop_toTopOf="@+id/lastmatch"/>
+
                     </android.support.constraint.ConstraintLayout>
 
                 </LinearLayout>

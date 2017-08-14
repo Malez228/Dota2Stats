@@ -105,7 +105,11 @@ public class Content
             Lane = "Not analyzed";
         }
 
-        Hero h = new Hero(heroName, Matches, Winrate, KDA, Image, Role, Lane);
+        String LastMatch = s.split("<td class=\"cell-xlar")[1].split(",")[1];
+        String[] a = LastMatch.split(" ");
+        LastMatch = a[1] + " " + a[2] + " " + a[3];
+
+        Hero h = new Hero(heroName, Matches, Winrate, KDA, Image, Role, Lane, LastMatch);
 
         return h;
     }
@@ -124,6 +128,22 @@ public class Content
         Assists = s.split("<td data-value=\"")[4].split("\">")[0];
 
         Hero h = new Hero(heroName, "", KDA, Kills, Deaths, Assists);
+
+        return h;
+    }
+
+    static Hero GetHeroEconomy(String html, String heroName)
+    {
+        String Gold, Exp;
+
+        String s = html;
+        s = s.split("<td class=\"cell-icon\" data-value=\"" + heroName)[1];
+
+        Gold = s.split("<td data-value=\"")[1].split("\">")[0];
+
+        Exp = s.split("<td data-value=\"")[2].split("\">")[0];
+
+        Hero h = new Hero(heroName, "", KDA, Gold, Exp, "");
 
         return h;
     }
