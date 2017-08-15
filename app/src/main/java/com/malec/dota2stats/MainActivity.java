@@ -1,12 +1,12 @@
 package com.malec.dota2stats;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +18,7 @@ import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import org.xmlpull.v1.XmlSerializer;
-
-import java.io.StringWriter;
-import java.util.ArrayList;
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -49,6 +46,8 @@ public class MainActivity extends AppCompatActivity
     public static String SelectedHero = "Abaddon";
 
     public static Boolean NewDay = true;
+
+    public static DataIO file;
 
         /* TODO
         * (готово) допилить что осталось в вкладку герои ( средн. голд экспа) мб еще что найти и запилить
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity
     {
         try
         {
-            List<Hero> heroes = c.GetHeroes(11);
+            List<Hero> heroes = file.Read(getApplicationContext());
 
             for (int i = 0; i < heroes.size(); i++)
             {
@@ -274,49 +273,11 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    Boolean WriteXML(List<Hero> heroes)
+    void LoadXML()
     {
-        XmlSerializer serializer = Xml.newSerializer();
-        StringWriter writer = new StringWriter();
-        try
-        {
-            serializer.setOutput(writer);
-            serializer.startDocument(null, Boolean.valueOf(true));
-            serializer.startTag(null, "heroes");
+        List<Hero> Heroes = c.GetHeroes(11);
 
-            for(int i = 0; i < heroes.size(); i++){
-                serializer.startTag(null, "hero");
-                serializer.attribute(null, "name", heroes.get(i).Name);
-                serializer.attribute(null, "image", heroes.get(i).Image);
-                serializer.attribute(null, "matches", heroes.get(i).Matches);
-                serializer.attribute(null, "winrate", heroes.get(i).Winrate);
-                serializer.attribute(null, "kda", heroes.get(i).KDA);
-                serializer.attribute(null, "kills", heroes.get(i).Kils);
-                serializer.attribute(null, "deaths", heroes.get(i).Deaths);
-                serializer.attribute(null, "assists", heroes.get(i).Assists);
-                serializer.attribute(null, "role", heroes.get(i).Role);
-                serializer.attribute(null, "lane", heroes.get(i).Lane);
-                serializer.attribute(null, "lastmatch", heroes.get(i).LastMatch);
-                serializer.endTag(null, null);
-            }
-
-            serializer.endTag(null, "heroes");
-            serializer.endDocument();
-        }
-        catch(Exception e)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    Boolean LoadXML()
-    {
-        List<Hero> Heroes = c.GetHeroes(10);
-        if (WriteXML(Heroes))
-            return true;
-        else
-            return false;
+        file.Write(Heroes, getApplicationContext());
     }
 
     @Override
@@ -340,6 +301,7 @@ public class MainActivity extends AppCompatActivity
 
         if (NewDay)
         {
+            file = new DataIO("test.txt");
             LoadXML();
 
             CalculateHeader();
