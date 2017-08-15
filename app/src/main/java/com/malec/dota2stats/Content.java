@@ -1,83 +1,50 @@
 package com.malec.dota2stats;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Content
 {
-    static String Name, Matches, Winrate, KDA, Image;
+    static String PlayerUrl;
 
-    static List<Hero> GetHeroes(String html)
+    public Content(String playerUrl)
     {
-        List<Hero> hs = new ArrayList<Hero>();
-
-        String s = html;
-        for (int i = 1; i < 11; i++)
-        {
-
-            s = html.split("<div class=\\\"r-row\\\">")[i];
-
-            try
-            {
-                Name = s.split("</a></div><div class=\\\"r-none-mobile\\\">")[1].split("</a>")[0];
-                Name = Name.split(">")[1].replace("&#39;", "'");
-            } catch (Exception e)
-            {
-                Name = "Error";
-            }
-
-            try
-            {
-                Matches = s.split("Matches</div><div class=\\\"r-body\\\">")[1];
-                Matches = Matches.split("<")[0];
-            } catch (Exception e)
-            {
-                Matches = "Error";
-            }
-
-            try
-            {
-                Winrate = s.split("Win %</div><div class=\\\"r-body\\\">")[1];
-                Winrate = Winrate.split("<")[0];
-            } catch (Exception e)
-            {
-                Winrate = "Error";
-            }
-
-            try
-            {
-                KDA = s.split("KDA</div><div class=\\\"r-body\\\">")[1];
-                KDA = KDA.split("<")[0];
-            } catch (Exception e)
-            {
-                KDA = "Error";
-            }
-
-            try
-            {
-                Image = s.split("<img class=\\\"image-hero image-icon\\\"")[1];
-                Image = Image.split("src=\"")[1].split("\"")[0];
-                Image = "https://www.dotabuff.com" + Image;
-            } catch (Exception e)
-            {
-                //Error image
-                Image = "https://images.duckduckgo.com/iu/?u=http%3A%2F%2Ffiles.softicons.com%2Fdownload%2Ftoolbar-icons%2Fmax-mini-icons-by-ashung%2Fpng%2F16x16%2Fcrossout.png&f=1";
-            }
-
-            Hero h = new Hero(Name, Matches, Winrate, KDA, Image);
-            hs.add(h);
-        }
-
-        return hs;
+        this.PlayerUrl = playerUrl;
     }
 
-    static  Hero GetHero(String html, String heroName)
+    public static String GetHeroesHTML(int index)
     {
-        String s = html;
+        String PlayerHeroesHTML = null;
+
+        InternetRequest htm = new InternetRequest();
+
+        switch (index)
+        {
+            case 0: htm.execute(PlayerUrl + "/heroes"); break;
+            case 1: htm.execute(PlayerUrl + "/heroes?metric=impact"); break;
+            case 2: htm.execute(PlayerUrl + "/heroes?metric=economy"); break;
+
+            default: htm.execute(PlayerUrl + "/heroes");
+        }
+
+        try
+        {
+            PlayerHeroesHTML = htm.get().toString();
+        }
+        catch (Exception e){ }
+        htm.cancel(true);
+
+        return PlayerHeroesHTML;
+    }
+
+    public static Hero GetHero(String heroName)
+    {
+        //Общаяя страница героя
+        String s = GetHeroesHTML(0);
         s = s.split("<td class=\"cell-icon\" data-value=\"" + heroName )[1];
 
-        String Image = s.split(" src=\"")[1].split("\"")[0];
-        Image = "https://www.dotabuff.com" + Image;
+        String Image = "https://www.dotabuff.com" + s.split(" src=\"")[1].split("\"")[0];
 
         String Matches = s.split("<td data-value=\"")[1].split(">")[1].split("<")[0];
 
@@ -86,66 +53,89 @@ public class Content
         String KDA = s.split("<td data-value=\"")[3].split("\">")[1].split("<div")[0];
 
         String Role;
-        try
-        {
-            Role = s.split("<i rel=\"\" title=\"\" class=\"fa fa-role-")[1].split("</i>")[1].split(" <")[0];
-        }
-        catch (Exception e)
-        {
-            Role = "Not analyzed";
-        }
+        try { Role = s.split("<i rel=\"\" title=\"\" class=\"fa fa-role-")[1].split("</i>")[1].split(" <")[0]; }
+        catch (Exception e) { Role = "Not analyzed"; }
 
         String Lane;
-        try
-        {
-            Lane = s.split("<i rel=\"\" title=\"\" class=\"fa fa-lane-")[1].split("</i>")[1].split(" <")[0];
-        }
-        catch (Exception e)
-        {
-            Lane = "Not analyzed";
-        }
+        try { Lane = s.split("<i rel=\"\" title=\"\" class=\"fa fa-lane-")[1].split("</i>")[1].split(" <")[0]; }
+        catch (Exception e) { Lane = "Not analyzed"; }
 
         String LastMatch = s.split("<td class=\"cell-xlar")[1].split(",")[1];
         String[] a = LastMatch.split(" ");
         LastMatch = a[1] + " " + a[2] + " " + a[3];
 
-        Hero h = new Hero(heroName, Matches, Winrate, KDA, Image, Role, Lane, LastMatch);
-
-        return h;
-    }
-
-    static Hero GetHeroImpact(String html, String heroName)
-    {
-        String Kills, Deaths, Assists;
-
-        String s = html;
+        //Страница импакта героя
+        s = GetHeroesHTML(1);
         s = s.split("<td class=\"cell-icon\" data-value=\"" + heroName)[1];
 
-        Kills = s.split("<td data-value=\"")[2].split("\">")[0];
+        String Kills = s.split("<td data-value=\"")[2].split("\">")[0];
+        String Deaths = s.split("<td data-value=\"")[3].split("\">")[0];
+        String Assists = s.split("<td data-value=\"")[4].split("\">")[0];
 
-        Deaths = s.split("<td data-value=\"")[3].split("\">")[0];
-
-        Assists = s.split("<td data-value=\"")[4].split("\">")[0];
-
-        Hero h = new Hero(heroName, "", KDA, Kills, Deaths, Assists);
-
-        return h;
-    }
-
-    static Hero GetHeroEconomy(String html, String heroName)
-    {
-        String Gold, Exp;
-
-        String s = html;
+        //Страница экономики героя
+        s = GetHeroesHTML(2);
         s = s.split("<td class=\"cell-icon\" data-value=\"" + heroName)[1];
 
-        Gold = s.split("<td data-value=\"")[1].split("\">")[0];
+        String Gold = s.split("<td data-value=\"")[1].split("\">")[0];
 
-        Exp = s.split("<td data-value=\"")[2].split("\">")[0];
+        String Exp = s.split("<td data-value=\"")[2].split("\">")[0];
 
-        Hero h = new Hero(heroName, "", KDA, Gold, Exp, "");
+        return new Hero(heroName, Image, Matches, Winrate, KDA, Kills, Deaths, Assists, Role, Lane, Gold, Exp, LastMatch);
+    }
 
-        return h;
+    static List<Hero> GetHeroes(int Count)
+    {
+        List<Hero> hs = new ArrayList<Hero>();
+
+        for (int i = 1; i < Count; i++)
+        {
+            //Общаяя страница героя
+            String s = GetHeroesHTML(0);
+            s = s.split("<td class=\"cell-icon\" data-value=\"")[i];
+
+            String Name = s.split("\"")[0];
+
+            String Image = "https://www.dotabuff.com" + s.split(" src=\"")[1].split("\"")[0];
+
+            String Matches = s.split("<td data-value=\"")[1].split(">")[1].split("<")[0];
+
+            String Winrate = s.split("<td data-value=\"")[2].split("\">")[1].split("<div")[0];
+
+            String KDA = s.split("<td data-value=\"")[3].split("\">")[1].split("<div")[0];
+
+            String Role;
+            try { Role = s.split("<i rel=\"\" title=\"\" class=\"fa fa-role-")[1].split("</i>")[1].split(" <")[0]; }
+            catch (Exception e) { Role = "Not analyzed"; }
+
+            String Lane;
+            try { Lane = s.split("<i rel=\"\" title=\"\" class=\"fa fa-lane-")[1].split("</i>")[1].split(" <")[0]; }
+            catch (Exception e) { Lane = "Not analyzed"; }
+
+            String LastMatch = s.split("<td class=\"cell-xlar")[1].split(",")[1];
+            String[] a = LastMatch.split(" ");
+            LastMatch = a[1] + " " + a[2] + " " + a[3];
+
+            //Страница импакта героя
+            s = GetHeroesHTML(1);
+            s = s.split("<td class=\"cell-icon\" data-value=\"")[i];
+
+            String Kills = s.split("<td data-value=\"")[2].split("\">")[0];
+            String Deaths = s.split("<td data-value=\"")[3].split("\">")[0];
+            String Assists = s.split("<td data-value=\"")[4].split("\">")[0];
+
+            //Страница экономики героя
+            s = GetHeroesHTML(2);
+            s = s.split("<td class=\"cell-icon\" data-value=\"")[i];
+
+            String Gold = s.split("<td data-value=\"")[1].split("\">")[0];
+
+            String Exp = s.split("<td data-value=\"")[2].split("\">")[0];
+
+            Hero h = new Hero(Name, Image, Matches, Winrate, KDA, Kills, Deaths, Assists, Role, Lane, Gold, Exp, LastMatch);
+            hs.add(h);
+        }
+
+        return hs;
     }
 
     static List<String> GetHeroesNames()

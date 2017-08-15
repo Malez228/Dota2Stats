@@ -6,6 +6,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,12 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
+
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -35,9 +42,19 @@ public class MainActivity extends AppCompatActivity
 
     public static String PlayerUrl = "https://www.dotabuff.com/players/123878279";
     public static String PlayerOverviewHTML, PlayerHeroesHTML, PlayerGameImpactHTML, PlayerEconomyHTML;
-    private String PlayerNickname;
+    public static String PlayerNickname;
+
+    public static Content c = new Content(PlayerUrl);
 
     public static String SelectedHero = "Abaddon";
+
+    public static Boolean NewDay = true;
+
+        /* TODO
+        * (готово) допилить что осталось в вкладку герои ( средн. голд экспа) мб еще что найти и запилить
+        * вкладка итемов все еще пустая - это следущее пойдет
+        * можно авторизацию еще добавить но хз для себя любимого же пишу
+        */
 
     void InitializeComponents()
     {
@@ -98,14 +115,15 @@ public class MainActivity extends AppCompatActivity
     {
         try
         {
-            String mmrSolo = HeaderContent.GetSoloMmr(PlayerOverviewHTML);
-            String mmrParty = HeaderContent.GetPartyMmr(PlayerOverviewHTML);
-            String winGames = HeaderContent.GetWinGames(PlayerOverviewHTML);
-            String loseGames = HeaderContent.GetLoseGames(PlayerOverviewHTML);
-            String adandonGames = HeaderContent.GetAbandonGames(PlayerOverviewHTML);
-            String percent = HeaderContent.GetPercent(PlayerOverviewHTML);
+            String s = Content.GetHeroesHTML(0);
+            String mmrSolo = HeaderContent.GetSoloMmr(s);
+            String mmrParty = HeaderContent.GetPartyMmr(s);
+            String winGames = HeaderContent.GetWinGames(s);
+            String loseGames = HeaderContent.GetLoseGames(s);
+            String adandonGames = HeaderContent.GetAbandonGames(s);
+            String percent = HeaderContent.GetPercent(s);
 
-            PlayerNickname = HeaderContent.GetPlayerNickname(PlayerOverviewHTML);
+            PlayerNickname = HeaderContent.GetPlayerNickname(s);
 
             MmrSolo.setText("Solo MMR:  " + mmrSolo);
             MmrParty.setText("Party MMR:  " + mmrParty);
@@ -114,17 +132,16 @@ public class MainActivity extends AppCompatActivity
             AbandonGames.setText(adandonGames + " A");
             Winrate.setText(percent);
         }
-        catch (Exception e)
-        {
-
-        }
+        catch (Exception e) { }
     }
 
     void CalculateContent()
     {
         try
         {
-            for (int i = 0; i < Content.GetHeroes(PlayerOverviewHTML).size(); i++)
+            List<Hero> heroes = c.GetHeroes(11);
+
+            for (int i = 0; i < heroes.size(); i++)
             {
                 switch (i)
                 {
@@ -148,7 +165,7 @@ public class MainActivity extends AppCompatActivity
                 HeroWinrate = (TextView)Hero.findViewById(R.id.winrate);
                 HeroKDA = (TextView)Hero.findViewById(R.id.heroKDA);
 
-                Hero h = Content.GetHeroes(PlayerOverviewHTML).get(i);
+                Hero h = heroes.get(i);
                 String heroimage = h.Image;
                 String heroname = h.Name;
                 String heromatches = h.Matches;
@@ -168,6 +185,12 @@ public class MainActivity extends AppCompatActivity
             HeroName = (TextView)Hero.findViewById(R.id.heroName);
             HeroName.setText(e.toString());
         }
+
+        try
+        {
+            GetSpinnerContent();
+        }
+        catch (Exception e) { }
     }
 
     int GetColor(String s)
@@ -189,6 +212,27 @@ public class MainActivity extends AppCompatActivity
         return color;
     }
 
+    void GetSpinnerContent()
+    {
+        Hero h = c.GetHero(SelectedHero);
+
+        new DownloadImageTask(sHeroImage).execute(h.Image);
+        sHeroName.setText(SelectedHero);
+        sHeroMatches.setText(h.Matches);
+        sHeroWinrate.setText(h.Winrate);
+        sHeroKDA.setText(h.KDA);
+        sHeroKills.setText(h.Kils);
+        sHeroDeaths.setText(h.Deaths);
+        sHeroAssists.setText(h.Assists);
+        sHeroRole.setTextColor(GetColor(h.Role));
+        sHeroRole.setText(h.Role);
+        sHeroLane.setTextColor(GetColor(h.Lane));
+        sHeroLane.setText(h.Lane);
+        sHeroGold.setText(h.Gold);
+        sHeroExp.setText(h.Exp);
+        sHeroLastMatch.setText(h.LastMatch);
+    }
+
     void InitializeHeroesSpinner()
     {
         Spinner spinner = (Spinner) findViewById(R.id.HeroesList);
@@ -206,104 +250,73 @@ public class MainActivity extends AppCompatActivity
 
                 try
                 {
-                    Hero h = Content.GetHero(PlayerHeroesHTML, SelectedHero);
-                    String heroimage = h.Image;
-                    String heromatches = h.Matches;
-                    String herowinrate = h.Winrate;
-                    String herokda = h.KDA;
-                    String herorole = h.Role;
-                    String herolane = h.Lane;
-                    String herolastmatch = h.LastMatch;
-
-                    new DownloadImageTask(sHeroImage).execute(heroimage);
-                    sHeroName.setText(SelectedHero);
-                    sHeroMatches.setText(heromatches);
-                    sHeroWinrate.setText(herowinrate);
-                    sHeroKDA.setText(herokda);
-                    sHeroRole.setTextColor(GetColor(herorole));
-                    sHeroRole.setText(herorole);
-                    sHeroLane.setTextColor(GetColor(herolane));
-                    sHeroLane.setText(herolane);
-                    sHeroLastMatch.setText(herolastmatch);
-
-                    h = Content.GetHeroImpact(PlayerGameImpactHTML, SelectedHero);
-                    String herokills = h.Kils;
-                    String herodeaths = h.Deaths;
-                    String heroassists = h.Assists;
-
-                    sHeroKills.setText(herokills);
-                    sHeroDeaths.setText(herodeaths);
-                    sHeroAssists.setText(heroassists);
-
-                    h = Content.GetHeroEconomy(PlayerEconomyHTML, SelectedHero);
-                    String herogold = h.Kils;
-                    String heroexp = h.Deaths;
-
-                    sHeroGold.setText(herogold);
-                    sHeroExp.setText(heroexp);
+                    GetSpinnerContent();
                 }
                 catch (Exception e)
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle("Selected hero")
-                            .setMessage("Unplayed hero - " + SelectedHero)
-                            .setCancelable(false)
-                            .setNegativeButton(getResources().getString(R.string.Ok),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.cancel();
-                                        }
-                                    });
+                    builder.setTitle("Selected hero").setMessage("Unplayed hero - " + SelectedHero).setCancelable(false).setNegativeButton(getResources().getString(R.string.Ok), new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            dialog.cancel();
+                        }
+                    });
                     AlertDialog alert = builder.create();
                     alert.show();
 
                     parent.setSelection(parent.getSelectedItemPosition() + 1);
                 }
             }
-            /* TODO
-            * (готово) допилить что осталось в вкладку герои ( средн. голд экспа) мб еще что найти и запилить
-            * вкладка итемов все еще пустая - это следущее пойдет
-            * можно авторизацию еще добавить но хз для себя любимого же пишу
-            */
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
     }
 
-    void LoadHTML()
+    Boolean WriteXML(List<Hero> heroes)
     {
-        InternetRequest htm = new InternetRequest();
-        htm.execute(PlayerUrl);
+        XmlSerializer serializer = Xml.newSerializer();
+        StringWriter writer = new StringWriter();
         try
         {
-            PlayerOverviewHTML = htm.get().toString();
-        }catch (Exception e) { }
-        htm.cancel(true);
+            serializer.setOutput(writer);
+            serializer.startDocument(null, Boolean.valueOf(true));
+            serializer.startTag(null, "heroes");
 
-        htm = new InternetRequest();
-        htm.execute(PlayerUrl + "/heroes");
-        try
-        {
-            PlayerHeroesHTML = htm.get().toString();
-        }catch (Exception e) { }
-        htm.cancel(true);
+            for(int i = 0; i < heroes.size(); i++){
+                serializer.startTag(null, "hero");
+                serializer.attribute(null, "name", heroes.get(i).Name);
+                serializer.attribute(null, "image", heroes.get(i).Image);
+                serializer.attribute(null, "matches", heroes.get(i).Matches);
+                serializer.attribute(null, "winrate", heroes.get(i).Winrate);
+                serializer.attribute(null, "kda", heroes.get(i).KDA);
+                serializer.attribute(null, "kills", heroes.get(i).Kils);
+                serializer.attribute(null, "deaths", heroes.get(i).Deaths);
+                serializer.attribute(null, "assists", heroes.get(i).Assists);
+                serializer.attribute(null, "role", heroes.get(i).Role);
+                serializer.attribute(null, "lane", heroes.get(i).Lane);
+                serializer.attribute(null, "lastmatch", heroes.get(i).LastMatch);
+                serializer.endTag(null, null);
+            }
 
-        htm = new InternetRequest();
-        htm.execute(PlayerUrl + "/heroes?metric=impact");
-        try
+            serializer.endTag(null, "heroes");
+            serializer.endDocument();
+        }
+        catch(Exception e)
         {
-            PlayerGameImpactHTML = htm.get().toString();
-        }catch (Exception e) { }
-        htm.cancel(true);
+            return false;
+        }
+        return true;
+    }
 
-        htm = new InternetRequest();
-        htm.execute(PlayerUrl + "/heroes?metric=economy");
-        try
-        {
-            PlayerEconomyHTML = htm.get().toString();
-        }catch (Exception e) { }
-        htm.cancel(true);
+    Boolean LoadXML()
+    {
+        List<Hero> Heroes = c.GetHeroes(10);
+        if (WriteXML(Heroes))
+            return true;
+        else
+            return false;
     }
 
     @Override
@@ -313,17 +326,31 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        long date = System.currentTimeMillis();
+
+        //TODO
+        //Если дата с прошлого старта отличается нужно заново загрузить данные
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        //String dateString = sdf.format(date).split("T")[1];
+
         InitializeComponents();
-
-        LoadHTML();
-
-        CalculateHeader();
-        CalculateContent();
 
         toolbar.setTitle("Dota2 Stats  -  " + PlayerNickname);
         setSupportActionBar(toolbar);
 
-        InitializeHeroesSpinner();
+        if (NewDay)
+        {
+            LoadXML();
+
+            CalculateHeader();
+            CalculateContent();
+
+            InitializeHeroesSpinner();
+        }
+        else
+        {
+
+        }
     }
 
     @Override

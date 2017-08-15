@@ -2,42 +2,22 @@ package com.malec.dota2stats;
 
 public class Hero
 {
-    public String Name, Matches, Winrate, KDA, Image;
+    public String Name, Image, Matches, Winrate, KDA, Kils, Deaths, Assists, Role, Lane, Gold, Exp, LastMatch;
 
-    public String Role, Lane;
-
-    public String Kils, Deaths, Assists;
-
-    public String LastMatch;
-
-    public Hero (String name, String image, String kda, String kills, String deaths, String assists)
+    public Hero (String name, String image, String matches, String winrate, String kda, String kills, String deaths, String assists, String role, String lane, String gold, String exp, String lastmatch)
     {
-        this.Image = image;
         this.Name = name;
+        this.Image = image;
+        this.Matches = matches;
+        this.Winrate = winrate;
         this.KDA = kda;
         this.Kils = kills;
         this.Deaths = deaths;
         this.Assists = assists;
-    }
-
-    public Hero (String name, String matches, String winrate, String kda, String image)
-    {
-        this.Image = image;
-        this.Name = name;
-        this.Matches = matches;
-        this.Winrate = winrate;
-        this.KDA = kda;
-    }
-
-    public Hero (String name, String matches, String winrate, String kda, String image, String role, String lane, String lastmatch)
-    {
-        this.Image = image;
-        this.Name = name;
-        this.Matches = matches;
-        this.Winrate = winrate;
-        this.KDA = kda;
         this.Role = role;
         this.Lane = lane;
+        this.Gold = gold;
+        this.Exp = exp;
         this.LastMatch = lastmatch;
     }
 }
