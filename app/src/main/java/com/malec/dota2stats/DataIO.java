@@ -2,10 +2,12 @@ package com.malec.dota2stats;
 
 import android.content.Context;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class DataIO
     public static List<Hero> Read(Context c)
     {
         List<Hero> h = new ArrayList<>();
-        
+
         try
         {
             FileInputStream stream = c.openFileInput(FileName);
@@ -65,9 +67,82 @@ public class DataIO
                     h.add(her);
                 }
             }
+            stream.close();
+            bufferedReader.close();
         }
         catch (Exception e) { }
 
         return h;
+    }
+
+    public static void WritePlayerData(PlayerData data, Context c)
+    {
+        try
+        {
+            FileOutputStream outputStream;
+            outputStream = c.openFileOutput(FileName, Context.MODE_PRIVATE);
+
+            String s = data.PlayerName + "♀" + data.SoloMMR + "♀" + data.PartyMMR + "♀" + data.Wins + "♀" + data.Losses + "♀" + data.Abandons + "♀" + data.Winrate;
+
+            outputStream.write(s.getBytes());
+            outputStream.close();
+        }
+        catch (Exception e) { }
+    }
+
+    public static PlayerData ReadPlayerData(Context c)
+    {
+        PlayerData data = null;
+
+        try
+        {
+            FileInputStream stream = c.openFileInput(FileName);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+
+            List<String> s = new ArrayList<>();
+
+            String line = bufferedReader.readLine();
+
+            String[] a = line.split("♀");
+
+            data = new PlayerData(a[0], a[1], a[2], a[3], a[4], a[5], a[6]);
+
+            stream.close();
+            bufferedReader.close();
+        }
+        catch (Exception e) { }
+
+        return data;
+    }
+
+    public static String ReadDate(Context c)
+    {
+        try
+        {
+            FileInputStream stream = c.openFileInput(FileName);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+
+            String line = bufferedReader.readLine();
+
+            stream.close();
+            bufferedReader.close();
+
+            return line;
+        }
+        catch (Exception e) { }
+
+        return "hui";
+    }
+
+    public static void WriteDate(String date, Context c)
+    {
+        try
+        {
+            FileOutputStream outputStream;
+            outputStream = c.openFileOutput(FileName, Context.MODE_PRIVATE);
+            outputStream.write(date.getBytes());
+            outputStream.close();
+        }
+        catch (Exception e) { }
     }
 }

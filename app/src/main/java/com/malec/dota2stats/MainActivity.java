@@ -1,10 +1,10 @@
 package com.malec.dota2stats;
 
-import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -14,11 +14,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -47,7 +49,11 @@ public class MainActivity extends AppCompatActivity
 
     public static Boolean NewDay = true;
 
-    public static DataIO file;
+    public static DataIO file, datetim;
+
+    public static List<Hero> Heroes;
+
+    public static PlayerData playerData;
 
         /* TODO
         * (готово) допилить что осталось в вкладку герои ( средн. голд экспа) мб еще что найти и запилить
@@ -112,35 +118,21 @@ public class MainActivity extends AppCompatActivity
 
     void CalculateHeader()
     {
-        try
-        {
-            String s = Content.GetHeroesHTML(0);
-            String mmrSolo = HeaderContent.GetSoloMmr(s);
-            String mmrParty = HeaderContent.GetPartyMmr(s);
-            String winGames = HeaderContent.GetWinGames(s);
-            String loseGames = HeaderContent.GetLoseGames(s);
-            String adandonGames = HeaderContent.GetAbandonGames(s);
-            String percent = HeaderContent.GetPercent(s);
+        PlayerNickname = playerData.PlayerName;
 
-            PlayerNickname = HeaderContent.GetPlayerNickname(s);
-
-            MmrSolo.setText("Solo MMR:  " + mmrSolo);
-            MmrParty.setText("Party MMR:  " + mmrParty);
-            WinGames.setText(winGames + " W");
-            LoseGames.setText(loseGames + " L");
-            AbandonGames.setText(adandonGames + " A");
-            Winrate.setText(percent);
-        }
-        catch (Exception e) { }
+        MmrSolo.setText("Solo MMR:  " + playerData.SoloMMR);
+        MmrParty.setText("Party MMR:  " + playerData.PartyMMR);
+        WinGames.setText(playerData.Wins + " W");
+        LoseGames.setText(playerData.Losses + " L");
+        AbandonGames.setText(playerData.Abandons + " A");
+        Winrate.setText(playerData.Winrate);
     }
 
     void CalculateContent()
     {
         try
         {
-            List<Hero> heroes = file.Read(getApplicationContext());
-
-            for (int i = 0; i < heroes.size(); i++)
+            for (int i = 0; i < 10; i++)
             {
                 switch (i)
                 {
@@ -164,14 +156,14 @@ public class MainActivity extends AppCompatActivity
                 HeroWinrate = (TextView)Hero.findViewById(R.id.winrate);
                 HeroKDA = (TextView)Hero.findViewById(R.id.heroKDA);
 
-                Hero h = heroes.get(i);
-                String heroimage = h.Image;
+                Hero h = Heroes.get(i);
                 String heroname = h.Name;
                 String heromatches = h.Matches;
                 String herowinrate = h.Winrate;
                 String herokda = h.KDA;
 
-                new DownloadImageTask(HeroImage).execute(heroimage);
+                Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), Content.GetHeroImage(heroname));
+                HeroImage.setImageBitmap(icon);
                 HeroName.setText(heroname + "   ");
                 HeroMatches.setText(heromatches + " M   ");
                 HeroWinrate.setText(herowinrate + "   ");
@@ -213,9 +205,18 @@ public class MainActivity extends AppCompatActivity
 
     void GetSpinnerContent()
     {
-        Hero h = c.GetHero(SelectedHero);
+        Hero h = null;
+        for (int i = 0; i < Heroes.size(); i++)
+        {
+            if (Heroes.get(i).Name.equals(SelectedHero))
+            {
+                h = Heroes.get(i);
+                break;
+            }
+        }
 
-        new DownloadImageTask(sHeroImage).execute(h.Image);
+        Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), Content.GetHeroImage(SelectedHero));
+        sHeroImage.setImageBitmap(icon);
         sHeroName.setText(SelectedHero);
         sHeroMatches.setText(h.Matches);
         sHeroWinrate.setText(h.Winrate);
@@ -253,18 +254,20 @@ public class MainActivity extends AppCompatActivity
                 }
                 catch (Exception e)
                 {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle("Selected hero").setMessage("Unplayed hero - " + SelectedHero).setCancelable(false).setNegativeButton(getResources().getString(R.string.Ok), new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int id)
-                        {
-                            dialog.cancel();
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-
-                    parent.setSelection(parent.getSelectedItemPosition() + 1);
+                    Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), Content.GetHeroImage(SelectedHero));
+                    sHeroImage.setImageBitmap(icon);
+                    sHeroName.setText(SelectedHero);
+                    sHeroMatches.setText("0");
+                    sHeroWinrate.setText("0");
+                    sHeroKDA.setText("0");
+                    sHeroKills.setText("0");
+                    sHeroDeaths.setText("0");
+                    sHeroAssists.setText("0");
+                    sHeroRole.setText("");
+                    sHeroLane.setText("");
+                    sHeroGold.setText("0");
+                    sHeroExp.setText("0");
+                    sHeroLastMatch.setText("Never");
                 }
             }
 
@@ -273,11 +276,15 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    void LoadXML()
+    void LoadFile()
     {
-        List<Hero> Heroes = c.GetHeroes(11);
+        Heroes = c.GetHeroes(113);
+        playerData = c.GetPlayerData();
 
         file.Write(Heroes, getApplicationContext());
+
+        DataIO file2 = new DataIO("PlayerData.txt");
+        file2.WritePlayerData(playerData, getApplicationContext());
     }
 
     @Override
@@ -285,34 +292,59 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        long date = System.currentTimeMillis();
-
-        //TODO
         //Если дата с прошлого старта отличается нужно заново загрузить данные
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        //String dateString = sdf.format(date).split("T")[1];
+        datetim = new DataIO("Date.txt");
+        String oldDate = datetim.ReadDate(getApplicationContext());
+        String currentDate = (new Date(System.currentTimeMillis())).toString();
 
-        InitializeComponents();
-
-        toolbar.setTitle("Dota2 Stats  -  " + PlayerNickname);
-        setSupportActionBar(toolbar);
+        try
+        {
+            String a = oldDate.split(" ")[1];
+            String b = currentDate.split(" ")[1];
+            String c = oldDate.split(" ")[2];
+            String d = currentDate.split(" ")[2];
+            /*String a = oldDate.split(" ")[1];
+            String b = "lo awd 12";
+            String c = oldDate.split(" ")[2];
+            String d = "gfw mij 78";*/
+            if ((a.compareTo(b) == 0) || (c.compareTo(d) == 0))
+                NewDay = false;
+            else
+                NewDay = true;
+        }
+        catch (Exception e)
+        {
+            NewDay = true;
+        }
 
         if (NewDay)
         {
-            file = new DataIO("test.txt");
-            LoadXML();
+            datetim.WriteDate(currentDate, getApplicationContext());
 
-            CalculateHeader();
-            CalculateContent();
-
-            InitializeHeroesSpinner();
+            file = new DataIO("HeroesData.txt");
+            LoadFile();
         }
         else
         {
+            file = new DataIO("HeroesData.txt");
+            Heroes = file.Read(getApplicationContext());
 
+            DataIO file2 = new DataIO("PlayerData.txt");
+            playerData = file2.ReadPlayerData(getApplicationContext());
         }
+
+        InitializeComponents();
+
+        CalculateHeader();
+        CalculateContent();
+
+        InitializeHeroesSpinner();
+
+        toolbar.setTitle("Dota2 Stats  -  " + PlayerNickname);
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -329,7 +361,24 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.action_settings)
         {
-            setContentView(R.layout.settings);
+            String currentDate = (new Date(System.currentTimeMillis())).toString();
+            DataIO datetimNew = new DataIO("Date.txt");
+            datetimNew.WriteDate(currentDate, getApplicationContext());
+
+            DataIO fileNew = new DataIO("HeroesData.txt");
+
+            Heroes = c.GetHeroes(113);
+            playerData = c.GetPlayerData();
+
+            fileNew.Write(Heroes, getApplicationContext());
+
+            DataIO file2 = new DataIO("PlayerData.txt");
+            file2.WritePlayerData(playerData, getApplicationContext());
+
+            CalculateHeader();
+            CalculateContent();
+
+            InitializeHeroesSpinner();
 
             return true;
         }
