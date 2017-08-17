@@ -101,11 +101,14 @@ public class Content
     {
         List<Hero> hs = new ArrayList<Hero>();
 
+        String s0 = GetHeroesHTML(0);
+        String s1 = GetHeroesHTML(1);
+        String s2 = GetHeroesHTML(2);
+
         for (int i = 1; i < Count; i++)
         {
             //Общаяя страница героя
-            String s = GetHeroesHTML(0);
-            s = s.split("<td class=\"cell-icon\" data-value=\"")[i];
+            String s = s0.split("<td class=\"cell-icon\" data-value=\"")[i];
 
             String Name = s.split("\"")[0];
 
@@ -130,16 +133,14 @@ public class Content
             LastMatch = a[1] + " " + a[2] + " " + a[3];
 
             //Страница импакта героя
-            s = GetHeroesHTML(1);
-            s = s.split("<td class=\"cell-icon\" data-value=\"" + Name)[1];
+            s = s1.split("<td class=\"cell-icon\" data-value=\"" + Name)[1];
 
             String Kills = s.split("<td data-value=\"")[2].split("\">")[0];
             String Deaths = s.split("<td data-value=\"")[3].split("\">")[0];
             String Assists = s.split("<td data-value=\"")[4].split("\">")[0];
 
             //Страница экономики героя
-            s = GetHeroesHTML(2);
-            s = s.split("<td class=\"cell-icon\" data-value=\"" + Name)[1];
+            s = s2.split("<td class=\"cell-icon\" data-value=\"" + Name)[1];
 
             String Gold = s.split("<td data-value=\"")[1].split("\">")[0];
 

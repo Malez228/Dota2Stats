@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity
 
                 Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), Content.GetHeroImage(heroname));
                 HeroImage.setImageBitmap(icon);
-                HeroName.setText(heroname + "   ");
+                HeroName.setText(heroname);
                 HeroMatches.setText(heromatches + " M   ");
                 HeroWinrate.setText(herowinrate + "   ");
                 HeroKDA.setText(herokda + " KDA   ");
@@ -304,13 +304,13 @@ public class MainActivity extends AppCompatActivity
         {
             String a = oldDate.split(" ")[1];
             String b = currentDate.split(" ")[1];
-            String c = oldDate.split(" ")[2];
-            String d = currentDate.split(" ")[2];
+            int c = Integer.parseInt(oldDate.split(" ")[2]);
+            int d = Integer.parseInt(currentDate.split(" ")[2]);
             /*String a = oldDate.split(" ")[1];
             String b = "lo awd 12";
             String c = oldDate.split(" ")[2];
             String d = "gfw mij 78";*/
-            if ((a.compareTo(b) == 0) || (c.compareTo(d) == 0))
+            if (a.equals(b) || c == d)
                 NewDay = false;
             else
                 NewDay = true;

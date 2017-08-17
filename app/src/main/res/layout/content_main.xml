@@ -116,7 +116,10 @@
                             android:textColor="@color/White"
                             android:textSize="16sp"
                             app:layout_constraintLeft_toLeftOf="@+id/kda"
-                            app:layout_constraintTop_toBottomOf="@+id/kda"/>
+                            app:layout_constraintTop_toBottomOf="@+id/kda"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginRight="0dp"
+                            app:layout_constraintRight_toRightOf="@+id/kda"/>
 
                         <TextView
                             android:id="@+id/selectedHeroRole"
@@ -192,13 +195,14 @@
                             android:id="@+id/kills"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="24dp"
                             android:layout_marginStart="24dp"
                             android:text="Kills"
                             android:textColor="@color/White"
                             android:textSize="16sp"
-                            app:layout_constraintLeft_toRightOf="@+id/selectedHeroKDA"
-                            app:layout_constraintTop_toTopOf="@+id/kda"/>
+                            app:layout_constraintTop_toTopOf="@+id/kda"
+                            android:layout_marginTop="0dp"
+                            app:layout_constraintLeft_toRightOf="@+id/kda"
+                            android:layout_marginLeft="24dp"/>
 
                         <TextView
                             android:id="@+id/deaths"
