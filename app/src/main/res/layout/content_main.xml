@@ -37,6 +37,110 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/tabRecords"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <include
+                                android:id="@+id/heroRec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero2Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero3Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero4Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero5Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero6Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero7Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero8Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero9Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero10Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero11Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero12Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero13Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                            <include
+                                android:id="@+id/hero14Rec"
+                                layout="@layout/records_element"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+                    </ScrollView>
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/tabHeroes"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -61,13 +165,14 @@
                         <ImageView
                             android:id="@+id/selectedHeroImage"
                             android:layout_width="107dp"
-                            android:layout_height="48dp"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="8dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
+                            android:elevation="0dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@android:drawable/ic_delete"
-                            android:layout_marginLeft="8dp"
-                            app:layout_constraintLeft_toLeftOf="parent"/>
+                            app:srcCompat="@android:drawable/ic_delete"/>
 
                         <TextView
                             android:id="@+id/selectedHeroName"
@@ -116,10 +221,8 @@
                             android:textColor="@color/White"
                             android:textSize="16sp"
                             app:layout_constraintLeft_toLeftOf="@+id/kda"
-                            app:layout_constraintTop_toBottomOf="@+id/kda"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginRight="0dp"
-                            app:layout_constraintRight_toRightOf="@+id/kda"/>
+                            app:layout_constraintRight_toRightOf="@+id/kda"
+                            app:layout_constraintTop_toBottomOf="@+id/kda"/>
 
                         <TextView
                             android:id="@+id/selectedHeroRole"
@@ -195,14 +298,13 @@
                             android:id="@+id/kills"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="24dp"
                             android:layout_marginStart="24dp"
                             android:text="Kills"
                             android:textColor="@color/White"
                             android:textSize="16sp"
-                            app:layout_constraintTop_toTopOf="@+id/kda"
-                            android:layout_marginTop="0dp"
                             app:layout_constraintLeft_toRightOf="@+id/kda"
-                            android:layout_marginLeft="24dp"/>
+                            app:layout_constraintTop_toTopOf="@+id/kda"/>
 
                         <TextView
                             android:id="@+id/deaths"
@@ -232,7 +334,6 @@
                             android:id="@+id/matches"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="0dp"
                             android:layout_marginTop="16dp"
                             android:text="Matches"
                             android:textColor="@color/White"
@@ -321,20 +422,6 @@
                             android:textSize="16sp"
                             app:layout_constraintLeft_toRightOf="@+id/lastmatch"
                             app:layout_constraintTop_toTopOf="@+id/lastmatch"/>
-
-                    </android.support.constraint.ConstraintLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tabItems"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <android.support.constraint.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
 
                     </android.support.constraint.ConstraintLayout>
 
@@ -512,6 +599,7 @@
 
 
             </FrameLayout>
+
         </LinearLayout>
     </TabHost>
 

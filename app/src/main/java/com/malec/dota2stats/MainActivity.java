@@ -53,11 +53,13 @@ public class MainActivity extends AppCompatActivity
 
     public static List<Hero> Heroes;
 
+    public static List<Record> Records;
+
     public static PlayerData playerData;
 
         /* TODO
         * (готово) допилить что осталось в вкладку герои ( средн. голд экспа) мб еще что найти и запилить
-        * вкладка итемов все еще пустая - это следущее пойдет
+        * ( нахрен итемы хочу сначала рекорды )вкладка итемов все еще пустая - это следущее пойдет
         * можно авторизацию еще добавить но хз для себя любимого же пишу
         */
 
@@ -78,8 +80,8 @@ public class MainActivity extends AppCompatActivity
         tabHost.addTab(tabHeroes);
 
         tabItems = tabHost.newTabSpec("tag3");
-        tabItems.setContent(R.id.tabItems);
-        tabItems.setIndicator("Items");
+        tabItems.setContent(R.id.tabRecords);
+        tabItems.setIndicator("Records");
         tabHost.addTab(tabItems);
 
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
@@ -167,7 +169,7 @@ public class MainActivity extends AppCompatActivity
                 HeroName.setText(heroname);
                 HeroMatches.setText(heromatches + " M   ");
                 HeroWinrate.setText(herowinrate + "   ");
-                HeroKDA.setText(herokda + " KDA   ");
+                HeroKDA.setText(herokda + " KDA");
             }
         }
         catch (Exception e)
@@ -182,6 +184,51 @@ public class MainActivity extends AppCompatActivity
             GetSpinnerContent();
         }
         catch (Exception e) { }
+    }
+
+    void CalculateRecords()
+    {
+        Records = c.GetRecords();
+
+        for (int i = 0; i < 14; i++)
+        {
+            ConstraintLayout record = null;
+            switch (i)
+            {
+                case 0: record = (ConstraintLayout)findViewById(R.id.heroRec); break;
+                case 1: record = (ConstraintLayout)findViewById(R.id.hero2Rec); break;
+                case 2: record = (ConstraintLayout)findViewById(R.id.hero3Rec); break;
+                case 3: record = (ConstraintLayout)findViewById(R.id.hero4Rec); break;
+                case 4: record = (ConstraintLayout)findViewById(R.id.hero5Rec); break;
+                case 5: record = (ConstraintLayout)findViewById(R.id.hero6Rec); break;
+                case 6: record = (ConstraintLayout)findViewById(R.id.hero7Rec); break;
+                case 7: record = (ConstraintLayout)findViewById(R.id.hero8Rec); break;
+                case 8: record = (ConstraintLayout)findViewById(R.id.hero9Rec); break;
+                case 9: record = (ConstraintLayout)findViewById(R.id.hero10Rec); break;
+                case 10: record = (ConstraintLayout)findViewById(R.id.hero11Rec); break;
+                case 11: record = (ConstraintLayout)findViewById(R.id.hero12Rec); break;
+                case 12: record = (ConstraintLayout)findViewById(R.id.hero13Rec); break;
+                case 13: record = (ConstraintLayout)findViewById(R.id.hero14Rec); break;
+            }
+
+            ImageView HeroImage = (ImageView)record.findViewById(R.id.heroImage);
+            TextView HeroName = (TextView)record.findViewById(R.id.heroName);
+            TextView RecordName = (TextView)record.findViewById(R.id.record);
+            TextView RecordValue = (TextView)record.findViewById(R.id.heroRecord);
+
+            Record r = Records.get(i);
+
+            String heroname = r.HeroName;
+            String recordname = r.RecordName;
+            String recordvalue = r.Value;
+            String date = r.Date;
+
+            Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), Content.GetHeroImage(heroname));
+            HeroImage.setImageBitmap(icon);
+            HeroName.setText(heroname);
+            RecordName.setText(recordname + "  -  " + recordvalue);
+            RecordValue.setText(date);
+        }
     }
 
     int GetColor(String s)
@@ -340,6 +387,7 @@ public class MainActivity extends AppCompatActivity
 
         CalculateHeader();
         CalculateContent();
+        CalculateRecords();
 
         InitializeHeroesSpinner();
 

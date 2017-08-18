@@ -23,6 +23,7 @@ public class Content
             case 0: htm.execute(PlayerUrl + "/heroes"); break;
             case 1: htm.execute(PlayerUrl + "/heroes?metric=impact"); break;
             case 2: htm.execute(PlayerUrl + "/heroes?metric=economy"); break;
+            case 3: htm.execute(PlayerUrl + "/records"); break;
 
             default: htm.execute(PlayerUrl + "/heroes");
         }
@@ -97,7 +98,7 @@ public class Content
         return new Hero(heroName, Image, Matches, Winrate, KDA, Kills, Deaths, Assists, Role, Lane, Gold, Exp, LastMatch);
     }
 
-    static List<Hero> GetHeroes(int Count)
+    public static List<Hero> GetHeroes(int Count)
     {
         List<Hero> hs = new ArrayList<Hero>();
 
@@ -151,6 +152,31 @@ public class Content
         }
 
         return hs;
+    }
+
+    public static List<Record> GetRecords()
+    {
+        List<Record> Records = new ArrayList<>();
+
+        String s0 = GetHeroesHTML(3);
+        s0 = s0.split("<div class=\\\"player-records\\\">")[1];
+
+        for (int i = 1; i < 15; i++)
+        {
+            String s = s0.split("<div class=\\\"title\\\">")[i];
+
+            String recordName = s.split("</div>")[0];
+            String heroName = s.split("<div class=\\\"hero\\\">")[1].split("</div>")[0];
+            heroName = heroName.substring(0, heroName.lastIndexOf(' ') - 1);
+            String value = s.split("<div class=\\\"value\\\">")[1].split("</div>")[0];
+            String date = s.split("<time datetime")[1].split(",")[1];
+            String[] a = date.split(" ");
+            date = a[1] + " " + a[2] + " " + a[3];
+
+            Records.add(new Record(recordName, heroName, value, date));
+        }
+
+        return Records;
     }
 
     static List<String> GetHeroesNames()
