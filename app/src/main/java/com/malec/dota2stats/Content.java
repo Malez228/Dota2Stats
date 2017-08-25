@@ -12,7 +12,7 @@ public class Content
         this.PlayerUrl = playerUrl;
     }
 
-    public static String GetHeroesHTML(int index)
+    public static String GetHeroesHTML(int index, String name)
     {
         String PlayerHeroesHTML = null;
 
@@ -24,6 +24,8 @@ public class Content
             case 1: htm.execute(PlayerUrl + "/heroes?metric=impact"); break;
             case 2: htm.execute(PlayerUrl + "/heroes?metric=economy"); break;
             case 3: htm.execute(PlayerUrl + "/records"); break;
+            case 4: htm.execute(PlayerUrl + "/records?metric=minute"); break;
+            case 5: htm.execute("https://www.dotabuff.com/search?q=" + name.replace(" ", "+")); break;
 
             default: htm.execute(PlayerUrl + "/heroes");
         }
@@ -40,7 +42,7 @@ public class Content
 
     public static PlayerData GetPlayerData()
     {
-        String html = GetHeroesHTML(0);
+        String html = GetHeroesHTML(0, "");
 
         String solo = html.split("<dd class=\\\"rating-expired\\\">")[1].split(" ")[0];
         String party = html.split("<dd class=\\\"rating-expired\\\">")[2].split(" ")[0];
@@ -56,7 +58,7 @@ public class Content
     public static Hero GetHero(String heroName)
     {
         //Общаяя страница героя
-        String s = GetHeroesHTML(0);
+        String s = GetHeroesHTML(0, "");
         s = s.split("<td class=\"cell-icon\" data-value=\"" + heroName )[1];
 
         String Image = "https://www.dotabuff.com" + s.split(" src=\"")[1].split("\"")[0];
@@ -80,7 +82,7 @@ public class Content
         LastMatch = a[1] + " " + a[2] + " " + a[3];
 
         //Страница импакта героя
-        s = GetHeroesHTML(1);
+        s = GetHeroesHTML(1, "");
         s = s.split("<td class=\"cell-icon\" data-value=\"" + heroName)[1];
 
         String Kills = s.split("<td data-value=\"")[2].split("\">")[0];
@@ -88,7 +90,7 @@ public class Content
         String Assists = s.split("<td data-value=\"")[4].split("\">")[0];
 
         //Страница экономики героя
-        s = GetHeroesHTML(2);
+        s = GetHeroesHTML(2, "");
         s = s.split("<td class=\"cell-icon\" data-value=\"" + heroName)[1];
 
         String Gold = s.split("<td data-value=\"")[1].split("\">")[0];
@@ -102,81 +104,140 @@ public class Content
     {
         List<Hero> hs = new ArrayList<Hero>();
 
-        String s0 = GetHeroesHTML(0);
-        String s1 = GetHeroesHTML(1);
-        String s2 = GetHeroesHTML(2);
+        String s0 = GetHeroesHTML(0, "");
+        String s1 = GetHeroesHTML(1, "");
+        String s2 = GetHeroesHTML(2, "");
 
         for (int i = 1; i < Count; i++)
         {
-            //Общаяя страница героя
-            String s = s0.split("<td class=\"cell-icon\" data-value=\"")[i];
+            try
+            {
+                //Общаяя страница героя
+                String s = s0.split("<td class=\"cell-icon\" data-value=\"")[i];
 
-            String Name = s.split("\"")[0];
+                String Name = s.split("\"")[0];
 
-            String Image = "https://www.dotabuff.com" + s.split(" src=\"")[1].split("\"")[0];
+                String Image = "https://www.dotabuff.com" + s.split(" src=\"")[1].split("\"")[0];
 
-            String Matches = s.split("<td data-value=\"")[1].split(">")[1].split("<")[0];
+                String Matches = s.split("<td data-value=\"")[1].split(">")[1].split("<")[0];
 
-            String Winrate = s.split("<td data-value=\"")[2].split("\">")[1].split("<div")[0];
+                String Winrate = s.split("<td data-value=\"")[2].split("\">")[1].split("<div")[0];
 
-            String KDA = s.split("<td data-value=\"")[3].split("\">")[1].split("<div")[0];
+                String KDA = s.split("<td data-value=\"")[3].split("\">")[1].split("<div")[0];
 
-            String Role;
-            try { Role = s.split("<i rel=\"\" title=\"\" class=\"fa fa-role-")[1].split("</i>")[1].split(" <")[0]; }
-            catch (Exception e) { Role = "No data"; }
+                String Role;
+                try
+                {
+                    Role = s.split("<i rel=\"\" title=\"\" class=\"fa fa-role-")[1].split("</i>")[1].split(" <")[0];
+                } catch (Exception e)
+                {
+                    Role = "No data";
+                }
 
-            String Lane;
-            try { Lane = s.split("<i rel=\"\" title=\"\" class=\"fa fa-lane-")[1].split("</i>")[1].split(" <")[0]; }
-            catch (Exception e) { Lane = "No data"; }
+                String Lane;
+                try
+                {
+                    Lane = s.split("<i rel=\"\" title=\"\" class=\"fa fa-lane-")[1].split("</i>")[1].split(" <")[0];
+                } catch (Exception e)
+                {
+                    Lane = "No data";
+                }
 
-            String LastMatch = s.split("<td class=\"cell-xlar")[1].split(",")[1];
-            String[] a = LastMatch.split(" ");
-            LastMatch = a[1] + " " + a[2] + " " + a[3];
+                String LastMatch = s.split("<td class=\"cell-xlar")[1].split(",")[1];
+                String[] a = LastMatch.split(" ");
+                LastMatch = a[1] + " " + a[2] + " " + a[3];
 
-            //Страница импакта героя
-            s = s1.split("<td class=\"cell-icon\" data-value=\"" + Name)[1];
+                //Страница импакта героя
+                s = s1.split("<td class=\"cell-icon\" data-value=\"" + Name)[1];
 
-            String Kills = s.split("<td data-value=\"")[2].split("\">")[0];
-            String Deaths = s.split("<td data-value=\"")[3].split("\">")[0];
-            String Assists = s.split("<td data-value=\"")[4].split("\">")[0];
+                String Kills = s.split("<td data-value=\"")[2].split("\">")[0];
+                String Deaths = s.split("<td data-value=\"")[3].split("\">")[0];
+                String Assists = s.split("<td data-value=\"")[4].split("\">")[0];
 
-            //Страница экономики героя
-            s = s2.split("<td class=\"cell-icon\" data-value=\"" + Name)[1];
+                //Страница экономики героя
+                s = s2.split("<td class=\"cell-icon\" data-value=\"" + Name)[1];
 
-            String Gold = s.split("<td data-value=\"")[1].split("\">")[0];
+                String Gold = s.split("<td data-value=\"")[1].split("\">")[0];
 
-            String Exp = s.split("<td data-value=\"")[2].split("\">")[0];
+                String Exp = s.split("<td data-value=\"")[2].split("\">")[0];
 
-            Hero h = new Hero(Name, Image, Matches, Winrate, KDA, Kills, Deaths, Assists, Role, Lane, Gold, Exp, LastMatch);
-            hs.add(h);
+                Hero h = new Hero(Name, Image, Matches, Winrate, KDA, Kills, Deaths, Assists, Role, Lane, Gold, Exp, LastMatch);
+                hs.add(h);
+            }
+            catch (Exception e)
+            {
+                hs.add(new Hero("UNPLAYED HERO", "Abaddon", "0", "0%", "0", "0", "0", "0", "No data", "No data", "0", "0", "Never"));
+            }
         }
 
         return hs;
     }
 
-    public static List<Record> GetRecords()
+    public static List<Record> GetRecords(boolean sw)
     {
         List<Record> Records = new ArrayList<>();
 
-        String s0 = GetHeroesHTML(3);
+        String s0 = null;
+        if (!sw)
+            s0 = GetHeroesHTML(3, "");
+        else
+            s0 = GetHeroesHTML(4, "");
+
         s0 = s0.split("<div class=\\\"player-records\\\">")[1];
 
         for (int i = 1; i < 15; i++)
         {
-            String s = s0.split("<div class=\\\"title\\\">")[i];
+            try
+            {
+                String s = s0.split("<div class=\\\"title\\\">")[i];
 
-            String recordName = s.split("</div>")[0];
-            String heroName = s.split("<div class=\\\"hero\\\">")[1].split("</div>")[0];
-            heroName = heroName.substring(0, heroName.lastIndexOf(' ') - 1);
-            String value = s.split("<div class=\\\"value\\\">")[1].split("</div>")[0];
-            String date = s.split("<time datetime")[1].split(",")[1];
-            String[] a = date.split(" ");
-            date = a[1] + " " + a[2] + " " + a[3];
+                String recordName = s.split("</div>")[0];
+                String heroName = s.split("<div class=\\\"hero\\\">")[1].split("</div>")[0];
+                heroName = heroName.substring(0, heroName.lastIndexOf(' ') - 1);
+                String value = s.split("<div class=\\\"value\\\">")[1].split("</div>")[0];
+                String date = s.split("<time datetime")[1].split(",")[1];
+                String[] a = date.split(" ");
+                date = a[1] + " " + a[2] + " " + a[3];
 
-            Records.add(new Record(recordName, heroName, value, date));
+                Records.add(new Record(recordName, heroName, value, date));
+            }
+            catch (Exception e)
+            {
+                Records.add(new Record("", "", "", ""));
+            }
         }
 
         return Records;
+    }
+
+    public static List<PlayerData> GetPlayers(int Count, String request)
+    {
+        String html = GetHeroesHTML(5, request);
+        List<PlayerData> pds = new ArrayList<>();
+
+        for (int i = 1; i < Count + 1; i++)
+        {
+            String s = html.split("<div class=\"result result-player\"")[i];
+
+            String playerName = s.split("data-filter-value=\"")[1].split("\">")[0];
+            String playerImage = s.split("class=\"image-player image-avatar\" rel=\"tooltip-remote\" data-tooltip")[1].split("src=\"")[1].split("\"")[0];
+            String playerLastMatch = null;
+            try
+            {
+                playerLastMatch = s.split("<time datetime")[1].split(",")[1];
+                String[] a = playerLastMatch.split(" ");
+                playerLastMatch = a[1] + " " + a[2] + " " + a[3];
+            }
+            catch (Exception e)
+            {
+                playerLastMatch = "never";
+            }
+            String playerID = s.split("data-player-id=\"")[1].split("\"")[0];
+
+            pds.add(new PlayerData(playerName, playerImage, playerLastMatch, playerID));
+        }
+
+        return pds;
     }
 
     static List<String> GetHeroesNames()

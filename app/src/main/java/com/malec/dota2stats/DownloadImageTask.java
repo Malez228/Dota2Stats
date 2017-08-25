@@ -1,4 +1,4 @@
-/*package com.malec.dota2stats;
+package com.malec.dota2stats;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,4 +30,4 @@ class DownloadImageTask extends AsyncTask<String, Void, Bitmap>
     protected void onPostExecute(Bitmap result) {
         bmImage.setImageBitmap(result);
     }
-}*/
+}

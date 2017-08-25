@@ -1,8 +1,9 @@
 package com.malec.dota2stats;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,20 +14,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
     public static TabHost tabHost;
-    public static TabHost.TabSpec tabStats, tabHeroes, tabItems;
+    public static TabHost.TabSpec tabStats, tabHeroes, tabRecords;
 
     public static TextView MmrSolo, MmrParty, WinGames, LoseGames, AbandonGames, Winrate;
     public static TextView HeroName, HeroMatches, HeroWinrate, HeroKDA;
@@ -40,7 +41,6 @@ public class MainActivity extends AppCompatActivity
     public static ConstraintLayout Hero;
 
     public static String PlayerUrl = "https://www.dotabuff.com/players/123878279";
-    public static String PlayerOverviewHTML, PlayerHeroesHTML, PlayerGameImpactHTML, PlayerEconomyHTML;
     public static String PlayerNickname;
 
     public static Content c = new Content(PlayerUrl);
@@ -59,8 +59,10 @@ public class MainActivity extends AppCompatActivity
 
         /* TODO
         * (готово) допилить что осталось в вкладку герои ( средн. голд экспа) мб еще что найти и запилить
-        * ( нахрен итемы хочу сначала рекорды )вкладка итемов все еще пустая - это следущее пойдет
+        * (доделать для рекордов в минуту + запись в файл)( нахрен итемы хочу сначала рекорды )вкладка итемов все еще пустая - это следущее пойдет
+        * сначала нужно сделать меню настроек
         * можно авторизацию еще добавить но хз для себя любимого же пишу
+        * пофиксить смену героя при обновлении
         */
 
     void InitializeComponents()
@@ -79,10 +81,10 @@ public class MainActivity extends AppCompatActivity
         tabHeroes.setIndicator("Heroes");
         tabHost.addTab(tabHeroes);
 
-        tabItems = tabHost.newTabSpec("tag3");
-        tabItems.setContent(R.id.tabRecords);
-        tabItems.setIndicator("Records");
-        tabHost.addTab(tabItems);
+        tabRecords = tabHost.newTabSpec("tag3");
+        tabRecords.setContent(R.id.tabRecords);
+        tabRecords.setIndicator("Records");
+        tabHost.addTab(tabRecords);
 
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
             View v = tabHost.getTabWidget().getChildAt(i);
@@ -186,39 +188,53 @@ public class MainActivity extends AppCompatActivity
         catch (Exception e) { }
     }
 
-    void CalculateRecords()
+    void CalculateRecords(boolean sw)
     {
-        Records = c.GetRecords();
+        Records = c.GetRecords(sw);
 
         for (int i = 0; i < 14; i++)
         {
             ConstraintLayout record = null;
             switch (i)
             {
-                case 0: record = (ConstraintLayout)findViewById(R.id.heroRec); break;
-                case 1: record = (ConstraintLayout)findViewById(R.id.hero2Rec); break;
-                case 2: record = (ConstraintLayout)findViewById(R.id.hero3Rec); break;
-                case 3: record = (ConstraintLayout)findViewById(R.id.hero4Rec); break;
-                case 4: record = (ConstraintLayout)findViewById(R.id.hero5Rec); break;
-                case 5: record = (ConstraintLayout)findViewById(R.id.hero6Rec); break;
-                case 6: record = (ConstraintLayout)findViewById(R.id.hero7Rec); break;
-                case 7: record = (ConstraintLayout)findViewById(R.id.hero8Rec); break;
-                case 8: record = (ConstraintLayout)findViewById(R.id.hero9Rec); break;
-                case 9: record = (ConstraintLayout)findViewById(R.id.hero10Rec); break;
-                case 10: record = (ConstraintLayout)findViewById(R.id.hero11Rec); break;
-                case 11: record = (ConstraintLayout)findViewById(R.id.hero12Rec); break;
-                case 12: record = (ConstraintLayout)findViewById(R.id.hero13Rec); break;
-                case 13: record = (ConstraintLayout)findViewById(R.id.hero14Rec); break;
+                case 0:record = (ConstraintLayout) findViewById(R.id.heroRec); break;
+                case 1:record = (ConstraintLayout) findViewById(R.id.hero2Rec); break;
+                case 2:record = (ConstraintLayout) findViewById(R.id.hero3Rec); break;
+                case 3:record = (ConstraintLayout) findViewById(R.id.hero4Rec); break;
+                case 4:record = (ConstraintLayout) findViewById(R.id.hero5Rec); break;
+                case 5:record = (ConstraintLayout) findViewById(R.id.hero6Rec); break;
+                case 6:record = (ConstraintLayout) findViewById(R.id.hero7Rec); break;
+                case 7:record = (ConstraintLayout) findViewById(R.id.hero8Rec); break;
+                case 8:record = (ConstraintLayout) findViewById(R.id.hero9Rec); break;
+                case 9:record = (ConstraintLayout) findViewById(R.id.hero10Rec); break;
+                case 10:record = (ConstraintLayout) findViewById(R.id.hero11Rec); break;
+                case 11:record = (ConstraintLayout) findViewById(R.id.hero12Rec); break;
+                case 12:record = (ConstraintLayout) findViewById(R.id.hero13Rec); break;
+                case 13:record = (ConstraintLayout) findViewById(R.id.hero14Rec); break;
             }
 
-            ImageView HeroImage = (ImageView)record.findViewById(R.id.heroImage);
-            TextView HeroName = (TextView)record.findViewById(R.id.heroName);
-            TextView RecordName = (TextView)record.findViewById(R.id.record);
-            TextView RecordValue = (TextView)record.findViewById(R.id.heroRecord);
+            ImageView HeroImage = (ImageView) record.findViewById(R.id.heroImage);
+            TextView HeroName = (TextView) record.findViewById(R.id.heroName);
+            TextView RecordName = (TextView) record.findViewById(R.id.record);
+            TextView RecordValue = (TextView) record.findViewById(R.id.heroRecord);
 
             Record r = Records.get(i);
 
             String heroname = r.HeroName;
+            if (heroname == "")
+            {
+                HeroImage.setVisibility(ImageView.GONE);
+                HeroName.setVisibility(TextView.GONE);
+                RecordName.setVisibility(TextView.GONE);
+                RecordValue.setVisibility(TextView.GONE);
+            }
+            else
+            {
+                HeroImage.setVisibility(ImageView.VISIBLE);
+                HeroName.setVisibility(TextView.VISIBLE);
+                RecordName.setVisibility(TextView.VISIBLE);
+                RecordValue.setVisibility(TextView.VISIBLE);
+            }
             String recordname = r.RecordName;
             String recordvalue = r.Value;
             String date = r.Date;
@@ -334,6 +350,41 @@ public class MainActivity extends AppCompatActivity
         file2.WritePlayerData(playerData, getApplicationContext());
     }
 
+    public void SyncData()
+    {
+        String sssss = PlayerUrl;
+        Content ct = new Content(sssss);
+
+        String currentDate = (new Date(System.currentTimeMillis())).toString();
+        DataIO datetimNew = new DataIO("Date.txt");
+        datetimNew.WriteDate(currentDate, getApplicationContext());
+
+        DataIO fileNew = new DataIO("HeroesData.txt");
+
+        Heroes = ct.GetHeroes(113);
+        playerData = ct.GetPlayerData();
+
+        fileNew.Write(Heroes, getApplicationContext());
+
+        DataIO file2 = new DataIO("PlayerData.txt");
+        file2.WritePlayerData(playerData, getApplicationContext());
+
+        CalculateHeader();
+        CalculateContent();
+
+        InitializeHeroesSpinner();
+/*
+        Spinner s = (Spinner)findViewById(R.id.HeroesList);
+        for (int i = 0; i < Heroes.size() - 1; i++)
+        {
+            if (Heroes.get(i).Name == SelectedHero)
+            {
+                s.setSelection(i);
+                break;
+            }
+        }*/
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -387,12 +438,44 @@ public class MainActivity extends AppCompatActivity
 
         CalculateHeader();
         CalculateContent();
-        CalculateRecords();
+        CalculateRecords(false);
 
         InitializeHeroesSpinner();
 
         toolbar.setTitle("Dota2 Stats  -  " + PlayerNickname);
         setSupportActionBar(toolbar);
+
+
+        TextView SwitchTotal = (TextView)findViewById(R.id.SwitchTotal);
+        TextView SwitchMinute = (TextView)findViewById(R.id.SwitchMinute);
+        final Switch Switch = (Switch)findViewById(R.id.switch1);
+
+        SwitchTotal.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Switch.setChecked(false);
+            }
+        });
+
+        SwitchMinute.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Switch.setChecked(true);
+            }
+        });
+
+        Switch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                CalculateRecords(b);
+            }
+        });
     }
 
     @Override
@@ -403,32 +486,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        SyncData();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id = item.getItemId();
 
         if (id == R.id.action_settings)
         {
-            String currentDate = (new Date(System.currentTimeMillis())).toString();
-            DataIO datetimNew = new DataIO("Date.txt");
-            datetimNew.WriteDate(currentDate, getApplicationContext());
-
-            DataIO fileNew = new DataIO("HeroesData.txt");
-
-            Heroes = c.GetHeroes(113);
-            playerData = c.GetPlayerData();
-
-            fileNew.Write(Heroes, getApplicationContext());
-
-            DataIO file2 = new DataIO("PlayerData.txt");
-            file2.WritePlayerData(playerData, getApplicationContext());
-
-            CalculateHeader();
-            CalculateContent();
-
-            InitializeHeroesSpinner();
+            Intent kek = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(kek);
 
             return true;
+        }
+        else
+        {
+            SyncData();
         }
         return super.onOptionsItemSelected(item);
     }

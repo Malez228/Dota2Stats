@@ -3,8 +3,14 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.malec.dota2stats.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_reload"
+        android:icon="@android:drawable/ic_popup_sync"
         android:orderInCategory="100"
         android:title="Reload"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:orderInCategory="101"
+        android:title="Settings"/>
 </menu>
